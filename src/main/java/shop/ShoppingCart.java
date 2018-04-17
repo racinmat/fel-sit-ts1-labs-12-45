@@ -63,16 +63,28 @@ public class ShoppingCart {
      * 
      * @return total price with discount
      */
-    public int getTotalPrice() {
-        return (int) items.stream().mapToDouble(Item::getPrice).sum();
+    public int getTotalPrice(Customer customer) {
+//        return Math.max(getOriginalPrice() - getDiscount(customer), 0);
+        int originalPrice = getOriginalPrice();
+        int discount = getDiscount(customer);
+        if (originalPrice < discount) {
+            return 0;
+        }
+        return originalPrice - discount;
     }
-    
+
     public int getDiscount(Customer customer) {
+        if (customer.getLoyaltyPoints() >= POINTS_FOR_DISCOUNT) {
+            return DISCOUNT;
+        }
+
         return 0;
     }
 
     public int getOriginalPrice() {
-        return 0;
+        return (int) items.stream()
+            .mapToDouble(Item::getPrice)
+            .sum();
     }
     
     

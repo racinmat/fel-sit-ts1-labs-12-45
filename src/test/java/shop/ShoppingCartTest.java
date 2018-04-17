@@ -37,7 +37,7 @@ public class ShoppingCartTest {
         when(mockedItem.getPrice()).thenReturn((float) 20);
         cart.addItem(mockedItem);
 
-        assertEquals(20, cart.getTotalPrice());
+        assertEquals(20, cart.getTotalPrice(new Customer("anonymous", "4chan")));
 //        verify(mockedItem, times(2)).getPrice();
         verify(mockedItem, times(1)).getPrice();
         verify(mockedItem, never()).setPrice(anyFloat());
@@ -76,4 +76,31 @@ public class ShoppingCartTest {
 
         assertEquals(20, cart.getOriginalPrice());
     }
+
+    @Test
+    public void getPriceAfterDiscount() {
+        Item mockedItem = mock(Item.class);
+        when(mockedItem.getPrice()).thenReturn((float) 2000);
+        cart.addItem(mockedItem);
+
+        Customer customer = mock(Customer.class);
+        when(customer.getLoyaltyPoints()).thenReturn(POINTS_FOR_DISCOUNT);
+
+        assertEquals(2000 - DISCOUNT, cart.getTotalPrice(customer));
+        verify(customer, times(1)).getLoyaltyPoints();
+    }
+
+    @Test
+    public void getZeroPriceAfterDiscount() {
+        Item mockedItem = mock(Item.class);
+        when(mockedItem.getPrice()).thenReturn((float) 20);
+        cart.addItem(mockedItem);
+
+        Customer customer = mock(Customer.class);
+        when(customer.getLoyaltyPoints()).thenReturn(POINTS_FOR_DISCOUNT);
+
+        assertEquals(0, cart.getTotalPrice(customer));
+        verify(customer, times(1)).getLoyaltyPoints();
+    }
+
 }

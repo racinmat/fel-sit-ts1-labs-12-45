@@ -49,7 +49,7 @@ public class EshopCartTest {
 
 //        assert
         assertEquals(1, cart.getItemsCount());
-        assertEquals(FIRST_ITEM_PRICE, cart.getTotalPrice());
+        assertEquals(FIRST_ITEM_PRICE, cart.getTotalPrice(new Customer("anonymous", "4chan")));
         assertEquals(cartItem1, cart.getCartItems().get(0));
 
 //        act
